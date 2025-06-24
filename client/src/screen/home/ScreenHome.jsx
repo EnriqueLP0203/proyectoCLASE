@@ -49,7 +49,7 @@ export default function ScreenHome() {
         </Button>
       </Card>
 
-      <Card >
+      {/* <Card >
         <Text style={styles.counterText}>Suma total: {contador}</Text>
         <Button mode="contained-tonal" buttonColor="#96E072" textColor="#134611" onPress={sumar}>
           Sumar
@@ -57,7 +57,7 @@ export default function ScreenHome() {
         <Button mode="contained-tonal" buttonColor="#E8FCCF" textColor="#134611" onPress={restar}>
           Restar
         </Button>
-      </Card>
+      </Card> */}
 
       <Button 
         icon="logout" 
@@ -75,17 +75,19 @@ export default function ScreenHome() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1,  //esta estilo es para que el contenedor ocupe todo el espacio disponible 
     backgroundColor: '#134611',
-    padding: 16,
+    padding: 16, //espacio entre los bordes del contenedor y los elementos dentro de él
     justifyContent: 'center',
+    
   },
   card: {
     backgroundColor: '#E8FCCF',
     marginBottom: 20,
-    padding: 16,
+    padding: 16, 
     borderRadius: 12,
     alignItems: 'center',
+    
   },
   counterCard: {
     backgroundColor: '#DFFFD0',

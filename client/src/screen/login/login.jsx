@@ -33,7 +33,7 @@ export default function Login() {
 
       try {
         const response = await fetch(
-          "http://172.168.15.213:4000/api/usuario/login",
+          "http://192.168.0.16:4000/api/usuario/login",
           requestOptions
         );
         const result = await response.json();

@@ -43,7 +43,7 @@ export default function Signup() {
 
     try {
       const response = await fetch(
-        "http://192.168.0.16:4000/api/usuario/agregar",
+        "http://172.168.14.172:4000/api/usuario/agregar",
         requestOptions
       );
 

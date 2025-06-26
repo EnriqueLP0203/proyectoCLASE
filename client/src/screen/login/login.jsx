@@ -11,7 +11,7 @@ export default function Login() {
   const { login } = useContext(estadoLoginGlobal);
 
   const handleLogin = async () => {
-    console.log("Login presionado"); // ← Añade esto
+    console.log("Login presionado");
 
     if (email == "" || password == "") {
       Alert.alert("Por favor, completa todos los campos");
@@ -33,7 +33,7 @@ export default function Login() {
 
       try {
         const response = await fetch(
-          "http://192.168.0.16:4000/api/usuario/login",
+          "http://172.168.14.172:4000/api/usuario/login",
           requestOptions
         );
         const result = await response.json();

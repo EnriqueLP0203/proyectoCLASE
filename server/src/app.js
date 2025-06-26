@@ -4,7 +4,7 @@ const config = require('./config');
 const clientes = require('./molulos/clientes/rutas');
 const usuario = require('./molulos/users/rutas');
 const lucescasa = require('./molulos/lucescasas/rutas');
-
+const puertascasa = require('./molulos/puertascasa/rutas');
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -16,5 +16,6 @@ app.set('port', config.app.port);
 app.use('/api/clientes', clientes);
 app.use('/api/usuario', usuario);
 app.use('/api/lucescasa', lucescasa );
+app.use('/api/puertascasa', puertascasa );
 
 module.exports = app;

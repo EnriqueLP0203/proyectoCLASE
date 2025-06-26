@@ -1,16 +1,21 @@
 import { StyleSheet, Text, View, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
-import { Card, Switch, ActivityIndicator, Button } from "react-native-paper";
+import { Card, Switch, ActivityIndicator, Button, Modal, Portal, TextInput } from "react-native-paper";
 
 export default function LucesCasa() {
   const [luces, setLuces] = useState([]); // Para almacenar las luces obtenidas de la base de datos
   const [loading, setLoading] = useState(true); // Para manejar el estado de carga de las luces
   const [updating, setUpdating] = useState({}); // Para manejar el estado de actualización de cada luz
+  
+  // Estados para el modal
+  const [modalVisible, setModalVisible] = useState(false);
+  const [nombreNuevaLuz, setNombreNuevaLuz] = useState("");
+  const [agregandoLuz, setAgregandoLuz] = useState(false);
 
   // Función para obtener todas las luces de la base de datos
   const obtenerLuces = async () => {
     try {
-      const response = await fetch("http://192.168.0.16:4000/api/lucescasa/");
+      const response = await fetch("http://172.168.14.172:4000/api/lucescasa/");
       const result = await response.json();
       
       if (result.error === false) {
@@ -27,7 +32,7 @@ export default function LucesCasa() {
   };
 
   // Función para actualizar el estado de una luz
-  const actualizarEstado= async (luz) => {
+  const actualizarEstado = async (luz) => {
     const luzId = luz.id;
     setUpdating(prev => ({ ...prev, [luzId]: true }));
 
@@ -51,7 +56,7 @@ export default function LucesCasa() {
         redirect: "follow"
       };
 
-      const response = await fetch("http://192.168.0.16:4000/api/lucescasa/agregar", requestOptions);
+      const response = await fetch("http://172.168.14.172:4000/api/lucescasa/agregar", requestOptions);
       const result = await response.json();
 
       if (result.error === false) {
@@ -78,6 +83,58 @@ export default function LucesCasa() {
     } finally {
       setUpdating(prev => ({ ...prev, [luzId]: false }));
     }
+  };
+
+  // Función para agregar una nueva luz
+  const agregarNuevaLuz = async () => {
+    if (!nombreNuevaLuz.trim()) {
+      Alert.alert("Error", "Por favor ingresa un nombre para la luz");
+      return;
+    }
+
+    setAgregandoLuz(true);
+
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      
+      const raw = JSON.stringify({
+        id: 0,
+        nombre: nombreNuevaLuz.trim(),
+        estado: "apagado"
+      });
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+      };
+
+      const response = await fetch("http://172.168.14.172:4000/api/lucescasa/agregar", requestOptions);
+      const result = await response.json();
+
+      if (result.error === false) {
+        Alert.alert("Éxito", `Luz "${nombreNuevaLuz}" agregada correctamente`);
+        setNombreNuevaLuz("");
+        setModalVisible(false);
+        // Recargar las luces para mostrar la nueva
+        obtenerLuces();
+      } else {
+        Alert.alert("Error", "No se pudo agregar la luz");
+      }
+    } catch (error) {
+      console.error("Error al agregar luz:", error);
+      Alert.alert("Error", "Error de conexión al agregar la luz");
+    } finally {
+      setAgregandoLuz(false);
+    }
+  };
+
+  // Función para cancelar y cerrar el modal
+  const cancelarAgregar = () => {
+    setNombreNuevaLuz("");
+    setModalVisible(false);
   };
 
   // Obtener las luces cuando el componente se monta
@@ -135,16 +192,67 @@ export default function LucesCasa() {
         ))
       )}
 
-      //boton para agregar luces
+      {/* Botón para agregar luces */}
       <Button 
         mode="contained" 
         buttonColor="#3E8914" 
         textColor="#E8FCCF"
-        onPress={() => Alert.alert("Funcionalidad no implementada", "Esta funcionalidad aún no está disponible")}
-        style={{ marginTop: 20 }}
+        onPress={() => setModalVisible(true)}
+        style={styles.addButton}
+        icon="plus"
       >
         Agregar Luz
       </Button>
+
+      {/* Modal para agregar nueva luz */}
+      <Portal>
+        <Modal 
+          visible={modalVisible} 
+          onDismiss={cancelarAgregar}
+          contentContainerStyle={styles.modalContainer}
+        >
+          <Card style={styles.modalCard}>
+            <Card.Title 
+              title="Agregar Nueva Luz" 
+              titleStyle={styles.modalTitle}
+            />
+            <Card.Content>
+              <TextInput
+                label="Nombre de la luz"
+                value={nombreNuevaLuz}
+                onChangeText={setNombreNuevaLuz}
+                mode="outlined"
+                placeholder="Ej: Luz de la cocina"
+                style={styles.textInput}
+                outlineColor="#3DA35D"
+                activeOutlineColor="#3E8914"
+                textColor="#134611"
+                disabled={agregandoLuz}
+              />
+            </Card.Content>
+            <Card.Actions style={styles.modalActions}>
+              <Button 
+                mode="outlined" 
+                onPress={cancelarAgregar}
+                textColor="#666"
+                disabled={agregandoLuz}
+              >
+                Cancelar
+              </Button>
+              <Button 
+                mode="contained" 
+                buttonColor="#3E8914"
+                textColor="#E8FCCF"
+                onPress={agregarNuevaLuz}
+                loading={agregandoLuz}
+                disabled={agregandoLuz}
+              >
+                {agregandoLuz ? "Agregando..." : "Agregar"}
+              </Button>
+            </Card.Actions>
+          </Card>
+        </Modal>
+      </Portal>
 
     </View>
   );
@@ -217,5 +325,33 @@ const styles = StyleSheet.create({
     color: '#E8FCCF',
     fontSize: 16,
     textAlign: 'center',
+  },
+  addButton: {
+    marginTop: 20,
+    borderRadius: 8,
+  },
+  modalContainer: {
+    padding: 20,
+    margin: 20,
+    borderRadius: 12,
+  },
+  modalCard: {
+    backgroundColor: '#E8FCCF',
+    borderRadius: 12,
+  },
+  modalTitle: {
+    color: '#134611',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  textInput: {
+    backgroundColor: '#FFFFFF',
+    marginBottom: 10,
+  },
+  modalActions: {
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
 });

@@ -1,6 +1,8 @@
-import { StyleSheet, Text, View, Alert } from "react-native";
+import { StyleSheet, Text, View, Alert, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Card, Switch, ActivityIndicator, Button, Modal, Portal, TextInput } from "react-native-paper";
+import Constants from 'expo-constants';
+
 
 export default function LucesCasa() {
   const [luces, setLuces] = useState([]); // Para almacenar las luces obtenidas de la base de datos
@@ -12,10 +14,13 @@ export default function LucesCasa() {
   const [nombreNuevaLuz, setNombreNuevaLuz] = useState("");
   const [agregandoLuz, setAgregandoLuz] = useState(false);
 
+  const API_URL = Constants.expoConfig.extra.apiUrl;
+
+
   // Función para obtener todas las luces de la base de datos
   const obtenerLuces = async () => {
     try {
-      const response = await fetch("http://172.168.14.172:4000/api/lucescasa/");
+      const response = await fetch(`${API_URL}/api/lucescasa/`);
       const result = await response.json();
       
       if (result.error === false) {
@@ -56,7 +61,7 @@ export default function LucesCasa() {
         redirect: "follow"
       };
 
-      const response = await fetch("http://172.168.14.172:4000/api/lucescasa/agregar", requestOptions);
+      const response = await fetch(`${API_URL}/api/lucescasa/agregar`, requestOptions);
       const result = await response.json();
 
       if (result.error === false) {
@@ -111,7 +116,7 @@ export default function LucesCasa() {
         redirect: "follow"
       };
 
-      const response = await fetch("http://172.168.14.172:4000/api/lucescasa/agregar", requestOptions);
+      const response = await fetch(`${API_URL}/api/lucescasa/agregar`, requestOptions);
       const result = await response.json();
 
       if (result.error === false) {
@@ -152,7 +157,8 @@ export default function LucesCasa() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}> 
+       <View style={styles.container}>
       <Text style={styles.title}>Luces de la casa</Text>
       
       {luces.length === 0 ? (
@@ -255,6 +261,8 @@ export default function LucesCasa() {
       </Portal>
 
     </View>
+    </ScrollView>
+   
   );
 }
 

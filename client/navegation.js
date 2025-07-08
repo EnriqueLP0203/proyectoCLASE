@@ -19,6 +19,7 @@ import signup from "./src/screen/login/signup";
 import ScreenAcercade from './src/screen/acercade/ScreenAcercade';
 import ScreenHome from './src/screen/home/ScreenHome';
 import ScreenSetting from './src/screen/setting/ScreenSetting';
+import ScreenUser from './src/screen/usuarios/ScreenUser'
 
 // Llamar los Screen hijos home
 import LucesCasa from "./src/screen/home/LucesCasa";
@@ -77,6 +78,12 @@ function MyDrawer() {
          <Drawer.Screen name="settings" component={MyStackHome} 
             options={{
                title: 'Settings',
+               drawerIcon: ({color, size}) => <FontAwesome size={28} name='home' color={color}/>
+            }}
+         />
+         <Drawer.Screen name="Profile" component={ScreenUser} 
+            options={{
+               title: 'Profile',
                drawerIcon: ({color, size}) => <FontAwesome size={28} name='home' color={color}/>
             }}
          />

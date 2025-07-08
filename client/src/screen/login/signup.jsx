@@ -2,6 +2,7 @@ import { StyleSheet, View, Alert, KeyboardAvoidingView, Platform, ScrollView } f
 import React, { useState } from "react";
 import { Text, TextInput, Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import Constants from 'expo-constants';
 
 export default function Signup() {
   const [nombre, setNombre] = useState("");
@@ -9,6 +10,8 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const rutas = useNavigation();
+
+  const API_URL = Constants.expoConfig.extra.apiUrl;
 
   console.log("input pw:", password);
   console.log("input confirm pw:", confirmPassword);
@@ -43,7 +46,7 @@ export default function Signup() {
 
     try {
       const response = await fetch(
-        "http://172.168.14.172:4000/api/usuario/agregar",
+        `${API_URL}/api/usuario/agregar`,
         requestOptions
       );
 

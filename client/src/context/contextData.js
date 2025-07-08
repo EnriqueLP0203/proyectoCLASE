@@ -4,3 +4,4 @@ export const counterContext = createContext();
 export const contadorGlobal = createContext();
 export const estadoGlobal = createContext();
 export const estadoLoginGlobal = createContext();
+export const estadoGlobalUserContext = createContext();
